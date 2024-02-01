@@ -4,27 +4,11 @@ import React from "react";
 
 import { useState, useEffect } from "react";
 
-// const Page = () => {
-//   const [session, setSesssion] = useState(null);
-//   const supabase = createClientComponentClient();
-//   useEffect(() => {
-//     async function getSession() {
-//       const {
-//         data: { session },
-//       } = await supabase.auth.getSession();
-//       setSesssion(session);
-//       console.log(session);
-//     }
-//     getSession();
-//   }, []);
-
-//   return <>{session?.user?.id}</>;
-// };
-
 const Page = () => {
   const [name, setName] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [scplace, setscplace] = useState(null);
+  const [pincode, setPincode] = useState(null);
   function getUserLocation() {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
@@ -34,6 +18,37 @@ const Page = () => {
       setscplace({ latitude, longitude });
     });
   }
+  function manualLocation() {
+    const url = `https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/${pincode}`;
+    const options = {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "fedf128934mshd6ab3a8a5eada3dp14371cjsn6e9685134704",
+        "X-RapidAPI-Host":
+          "india-pincode-with-latitude-and-longitude.p.rapidapi.com",
+      },
+    };
+
+    try {
+      const response = fetch(url, options)
+        .then((res) => res)
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          /**
+           * // console.log(res[0].lat, res[0].lng);
+           * console.log(res);
+           * it shows array of values with objects and it contains each individual location of the pincode and we will be selecting the one of the coordinates
+           *  */
+          const [{ lat, lng }] = res;
+          setscplace({ latitude: lat, longitude: lng });
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     const data = {
@@ -78,7 +93,12 @@ const Page = () => {
         <button type="submit">submit</button>
       </form>
       <button type="button" onClick={getUserLocation}>
-        getLocation
+        getLocation at present place
+      </button>
+
+      <input type="text" onChange={(e) => setPincode(e.target.value)} />
+      <button type="button" onClick={manualLocation}>
+        manually enter location
       </button>
     </>
   );

@@ -16,8 +16,6 @@ export async function POST(request) {
   const { latitude, longitude } = workerData.coords;
   const { phoneNumber } = workerData;
 
-  //   console.log(latitude, longitude);
-  //   console.log(id, email);mmm
   // here we will be checking if the worker is already been registered
   const checkifRegistered = await db.execute(
     sql`select * from workers where userid=${id}`
