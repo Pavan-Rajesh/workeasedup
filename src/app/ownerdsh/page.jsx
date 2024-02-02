@@ -14,7 +14,7 @@ const Page = () => {
 
   useEffect(() => {
     async function fetchWorkersworked() {
-      fetch("http://localhost:3000/api/ownerdash")
+      fetch("/api/ownerdash")
         .then((data) => data.json())
         .then((data) => {
           /**

@@ -1,4 +1,4 @@
-// registering for work
+// registering for work that the worker needs
 "use client";
 import React from "react";
 

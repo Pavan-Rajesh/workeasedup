@@ -14,6 +14,7 @@ const page = async () => {
   if (!session) {
     redirect("/login");
   }
+
   return (
     <>
       <div>page</div>
