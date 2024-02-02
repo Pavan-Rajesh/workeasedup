@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@/components/Navbar";
 import React, { useState } from "react";
 
 const Page = () => {
@@ -48,6 +49,20 @@ const Page = () => {
 
   return (
     <>
+      <Navbar />
+      <div>
+        <h3>id:345243526456253423</h3>
+        <h3>name:pavan</h3>
+        <h3>place:Rajahmundry</h3>
+        <h3>phone:9398856866</h3>
+        <h3>
+          address:Mallikharjuna Nagar ,Brahmam gari Temple Street ,Rajahmundry
+        </h3>
+        <h3>dob:14-12-2002</h3>
+        <h3>aadhar:551418375257</h3>
+        <h3>rating:5.5</h3>
+      </div>
+
       <div>{loading ? <>loading</> : <></>}</div>
       <br />
       <input type="text" onChange={(e) => setId(e.target.value)} />

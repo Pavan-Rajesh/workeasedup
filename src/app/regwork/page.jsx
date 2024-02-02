@@ -1,5 +1,6 @@
 // registering for work
 "use client";
+import Navbar from "@/components/Navbar";
 import React from "react";
 
 import { useState, useEffect } from "react";
@@ -74,6 +75,7 @@ const Page = () => {
 
   return (
     <>
+      <Navbar />
       <form onSubmit={handleSubmit}>
         <label>name</label>
         <input
@@ -89,6 +91,8 @@ const Page = () => {
             setPhoneNumber(e.target.value);
           }}
         />
+        <label>type of work</label>
+        <input type="text" />
 
         <button type="submit">submit</button>
       </form>

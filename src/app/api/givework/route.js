@@ -2,7 +2,7 @@
  * For giving work to others
  *
  *
- * */
+ */
 
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -12,7 +12,7 @@ import { db } from "@/db";
 import { client } from "@/db";
 export async function POST(request) {
   const ownerData = await request.json();
-
+  console.log(ownerData);
   const supabase = createServerComponentClient({ cookies });
   const {
     data: { session },
@@ -60,8 +60,8 @@ export async function POST(request) {
                 ST_MakePoint(
                     ${latitude},${longitude}
                 ),
-                4326)::geometry,${myuuidArr},${ownerData.startDate},${ownerData.endDate},2,'carpenter')`;
-    console.log(myuuidArr);
+                4326)::geometry,${myuuidArr},${ownerData.startDate},${ownerData.endDate},${ownerData.numberofworkers},${ownerData.workType})`;
+    // console.log(myuuidArr);
 
     //!!!! caution here we should also include the head id in the table field of owner so the head that is assigned will be known to the owner
 
@@ -79,7 +79,7 @@ export async function POST(request) {
                 ST_MakePoint(
                     ${latitude},${longitude}
                 ),
-                4326)::geometry,null,${ownerData.startDate},${ownerData.endDate},2,'carpenter')`);
+                4326)::geometry,null,${ownerData.startDate},${ownerData.endDate},${ownerData.numberofworkers},${ownerData.workType})`);
   }
   return NextResponse.json({ message: "This Worked", success: true });
 }
