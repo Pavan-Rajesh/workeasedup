@@ -142,3 +142,427 @@ END $$;
     rating: "successful",
   });
 }
+
+// create or replace function giveRatingToWholeWorkersUnderHead(rating float,ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//       workersArray text[];
+//       var text;
+//       headid text;
+//   BEGIN
+//       select head into headid from owners_duplicate where userid=ownerid::uuid;
+//       select workers into workersArray from head where id=headid::uuid;
+//        foreach var in array workersArray loop
+//    perform giveRatingToWorker(var,rating,ownerid);
+
+//      update head set workers=ARRAY_REMOVE(workers,var) where id=headid::uuid;
+//        --here we are removing the workers identity from array
+//   end loop;
+//   perform giveRatingToHead(headid,rating,ownerid);
+
+//   END
+
+// $$ language plpgsql;
+
+// -- whole bunch --
+
+// create or replace function separateRatingToEveryOne(workerid text,rating float,type text,ownerid text) returns void as $$
+// -- here worker means the head will also be present
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//     if type='head' then
+//       select headworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET headratings=ARRAY_APPEND(headratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT headratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set headrating = overallratingcalculated / worksuptonow,headworks=worksuptonow where id=workerid;
+//       delete from head where id=workerid::uuid;
+//       update owners_duplicate set head=null,ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid)  where userid=ownerid::uuid;
+
+//     else
+//       select workerworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET workerratings=ARRAY_APPEND(workerratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT workerratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set workerrating = overallratingcalculated / worksuptonow,workerworks=worksuptonow where id=workerid;
+//       delete from workers where userid=workerid;
+//       update owners_duplicate set workers=ARRAY_REMOVE(workers,workerid) where userid=ownerid::uuid;
+//       --error is here the ratingsgiven field is being duplicated
+//        update owners_duplicate set headworkers=ARRAY_REMOVE(headworkers,workerid) where userid=ownerid::uuid;
+//        update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid);
+//     end if;
+//   END
+
+// $$ language plpgsql;
+
+// create or replace function giveRatingToHead(headid text,rating float,ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//       select headworks into worksuptonow from users where id=headid;
+//       UPDATE users SET headratings=ARRAY_APPEND(headratings,rating) WHERE id = headid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT headratings FROM users WHERE id = headid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set headrating = overallratingcalculated / worksuptonow,headworks=worksuptonow where id=headid;
+//       delete from head where id=headid::uuid;
+//       update owners_duplicate set head=null where userid=ownerid::uuid;
+//       update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,headid)  where userid=ownerid::uuid;
+//   END
+
+// $$ language plpgsql;
+
+// create or replace function giveRatingToWorker(workerid text,rating float,ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//       select workerworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET workerratings=ARRAY_APPEND(workerratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT workerratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set workerrating = overallratingcalculated / worksuptonow,workerworks=worksuptonow where id=workerid;
+//       delete from workers where userid=workerid;
+//       update owners_duplicate set workers=ARRAY_REMOVE(workers,workerid) where userid=ownerid::uuid;
+//       update owners_duplicate set headworkers=ARRAY_REMOVE(headworkers,workerid) where userid=ownerid::uuid;
+//       update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid)  where userid=ownerid::uuid;
+//   END
+
+// $$ language plpgsql;
+
+// ---------------------------------------------------------
+
+// 11-02-24
+// create
+// or replace function giveRatingToWholeWorkersUnderHeadUtility (rating float, head_id text, ownerid text) returns void as $$
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//       workersArray text[];
+//       var text;
+//       headid text;
+//   BEGIN
+
+//       select workers into workersArray from head where id=head_id::uuid;
+
+//        foreach var in array workersArray loop
+//                 perform giveRatingToWorker(var,rating,ownerid);
+
+//      update head set workers=ARRAY_REMOVE(workers,var) where id=head_id::uuid;
+
+//        --here we are removing the workers identity from array
+//   end loop;
+//   perform giveRatingToHead(head_id,rating,ownerid);
+
+//   END
+
+// $$ language plpgsql;
+
+// create
+// or replace function giveRatingToWholeWorkersUnderHead (rating float, ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//       headsarray text[];
+//       var text;
+//       headid text;
+//   BEGIN
+//       select head into headsarray from owners_duplicate where userid=ownerid::uuid;
+
+//        foreach var in array headsarray loop
+//    perform giveRatingToWholeWorkersUnderHeadUtility(rating,var,ownerid);
+
+//        --here we are removing the workers identity from array
+//   end loop;
+
+//   END
+
+// $$ language plpgsql;
+
+// -- whole bunch --
+// create
+// or replace function separateRatingToEveryOne (
+//   workerid text,
+//   rating float,
+//   type
+//     text,
+//     ownerid text
+// ) returns void as $$
+// -- here worker means the head will also be present
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//     if type='head' then
+//       select headworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET headratings=ARRAY_APPEND(headratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT headratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set headrating = overallratingcalculated / worksuptonow,headworks=worksuptonow where id=workerid;
+// --       delete from head where id=workerid::uuid;
+// --     update owners_duplicate set head=null,ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid)  where userid=ownerid::uuid;
+// UPDATE owners_duplicate
+//                 SET
+//                 head = (
+//                         SELECT array_agg(head_id)
+//                         FROM unnest(head) AS head_id
+//                         WHERE head_id <> headid::uuid
+//                 )
+//                 WHERE userid = ownerid::uuid;
+//     else
+//       select workerworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET workerratings=ARRAY_APPEND(workerratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT workerratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set workerrating = overallratingcalculated / worksuptonow,workerworks=worksuptonow where id=workerid;
+//       --error is here the ratingsgiven field is being duplicated
+//        update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid);
+//     end if;
+//   END
+
+// $$ language plpgsql;
+
+// create
+// or replace function giveRatingToHead (headid text, rating float, ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//       select headworks into worksuptonow from users where id=headid;
+//       UPDATE users SET headratings=ARRAY_APPEND(headratings,rating) WHERE id = headid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT headratings FROM users WHERE id = headid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set headrating = overallratingcalculated / worksuptonow,headworks=worksuptonow where id=headid;
+//       delete from head where id=headid::uuid;
+//     UPDATE owners_duplicate
+//                 SET
+//                 head = (
+//                         SELECT array_agg(head_id)
+//                         FROM unnest(head) AS head_id
+//                         WHERE head_id <> headid::uuid
+//                 )
+//                 WHERE userid = ownerid::uuid;
+//       update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,headid)  where userid=ownerid::uuid;
+//   END
+
+// $$ language plpgsql;
+
+// create
+// or replace function giveRatingToWorker (workerid text, rating float, ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//       select workerworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET workerratings=ARRAY_APPEND(workerratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT workerratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set workerrating = overallratingcalculated / worksuptonow,workerworks=worksuptonow where id=workerid;
+//       delete from workers where userid=workerid;
+//       update owners_duplicate set workers=ARRAY_REMOVE(workers,workerid) where userid=ownerid::uuid;
+//       update owners_duplicate set headworkers=ARRAY_REMOVE(headworkers,workerid) where userid=ownerid::uuid;
+//       update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid)  where userid=ownerid::uuid;
+//   END
+
+// $$ language plpgsql;
+
+// -- select
+// --   giveRatingToWholeWorkersUnderHead (67, '0996cde2-5eca-447c-858b-8192927f7266');
+
+// create
+// or replace function giveRatingToWholeWorkersUnderHeadUtility (rating float, head_id text, ownerid text) returns void as $$
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//       workersArray text[];
+//       var text;
+//       headid text;
+//   BEGIN
+
+//       select workers into workersArray from head where id=head_id::uuid;
+
+//        foreach var in array workersArray loop
+//                 perform giveRatingToWorker(var,rating,ownerid);
+
+//      update head set workers=ARRAY_REMOVE(workers,var) where id=head_id::uuid;
+
+//        --here we are removing the workers identity from array
+//   end loop;
+//   perform giveRatingToHead(head_id,rating,ownerid);
+
+//   END
+
+// $$ language plpgsql;
+
+// create
+// or replace function giveRatingToWholeWorkersUnderHead (rating float, ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//       headsarray text[];
+//       var text;
+//       headid text;
+//   BEGIN
+//       select head into headsarray from owners_duplicate where userid=ownerid::uuid;
+
+//        foreach var in array headsarray loop
+//    perform giveRatingToWholeWorkersUnderHeadUtility(rating,var,ownerid);
+
+//        --here we are removing the workers identity from array
+//   end loop;
+
+//   END
+
+// $$ language plpgsql;
+
+// -- whole bunch --
+// create
+// or replace function separateRatingToEveryOne (
+//   workerid text,
+//   rating float,
+//   type
+//     text,
+//     ownerid text
+// ) returns void as $$
+// -- here worker means the head will also be present
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//     if type='head' then
+//       select headworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET headratings=ARRAY_APPEND(headratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT headratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set headrating = overallratingcalculated / worksuptonow,headworks=worksuptonow where id=workerid;
+// --       delete from head where id=workerid::uuid;
+// --     update owners_duplicate set head=null,ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid)  where userid=ownerid::uuid;
+// UPDATE owners_duplicate
+//                 SET
+//                 head = (
+//                         SELECT array_agg(head_id)
+//                         FROM unnest(head) AS head_id
+//                         WHERE head_id <> headid::uuid
+//                 )
+//                 WHERE userid = ownerid::uuid;
+//     else
+//       select workerworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET workerratings=ARRAY_APPEND(workerratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT workerratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set workerrating = overallratingcalculated / worksuptonow,workerworks=worksuptonow where id=workerid;
+//       --error is here the ratingsgiven field is being duplicated
+//        update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid);
+//     end if;
+//   END
+
+// $$ language plpgsql;
+
+// create
+// or replace function giveRatingToHead (headid text, rating float, ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//       select headworks into worksuptonow from users where id=headid;
+//       UPDATE users SET headratings=ARRAY_APPEND(headratings,rating) WHERE id = headid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT headratings FROM users WHERE id = headid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set headrating = overallratingcalculated / worksuptonow,headworks=worksuptonow where id=headid;
+//       delete from head where id=headid::uuid;
+//     UPDATE owners_duplicate
+//                 SET
+//                 head = (
+//                         SELECT array_agg(head_id)
+//                         FROM unnest(head) AS head_id
+//                         WHERE head_id <> headid::uuid
+//                 )
+//                 WHERE userid = ownerid::uuid;
+//       update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,headid)  where userid=ownerid::uuid;
+//   END
+
+// $$ language plpgsql;
+
+// create
+// or replace function giveRatingToWorker (workerid text, rating float, ownerid text) returns void as $$
+
+// DECLARE
+//       worksuptonow integer := 0;
+//       overallratingcalculated float :=0;
+//       worksuptonowsep integer :=0;
+//   BEGIN
+//       select workerworks into worksuptonow from users where id=workerid;
+//       UPDATE users SET workerratings=ARRAY_APPEND(workerratings,rating) WHERE id = workerid;
+//       worksuptonow := worksuptonow+1;
+//       SELECT SUM(value)
+//       INTO overallratingcalculated
+//       FROM unnest((SELECT workerratings FROM users WHERE id = workerid)) AS value;
+//       RAISE NOTICE 'overallratingcalculated is %', overallratingcalculated;
+//       update users set workerrating = overallratingcalculated / worksuptonow,workerworks=worksuptonow where id=workerid;
+//       delete from workers where userid=workerid;
+//       update owners_duplicate set workers=ARRAY_REMOVE(workers,workerid) where userid=ownerid::uuid;
+//       update owners_duplicate set headworkers=ARRAY_REMOVE(headworkers,workerid) where userid=ownerid::uuid;
+//       update owners_duplicate set ratingsgiven=ARRAY_APPEND(ratingsgiven,workerid)  where userid=ownerid::uuid;
+//   END
+
+// $$ language plpgsql;
+
+// -- select
+// --   giveRatingToWholeWorkersUnderHead (67, '0996cde2-5eca-447c-858b-8192927f7266');

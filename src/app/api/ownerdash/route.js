@@ -21,8 +21,10 @@ export async function GET(request) {
   const ownerWorkers = await db.execute(
     sql`select workers from owners_duplicate where userid=${id}`
   );
+  // console.log(ownerWorkers);
 
-  const workersAssigned = ownerWorkers[0].workers;
+  // console.log(ownerWorkers);
+  // const workersAssigned = ownerWorkers[0].workers;
 
   /**
    *  fetching workers details with their respective ids
@@ -32,10 +34,10 @@ export async function GET(request) {
    *
    *  this is only working for the single worker and not working for the more than other workers
    */
-  console.log(id);
+  // console.log(id);
 
-  const workersDetails = await client`
-select * from workers where userid in (select unnest(array(select workers from owners_duplicate where userid=${id})))`;
+  //   const workersDetails = await client`
+  // select * from workers where userid in (select unnest(array(select workers from owners_duplicate where userid=${id})))`;
 
   // console.log(workersDetails);
 
@@ -56,7 +58,7 @@ select * from workers where userid in (select unnest(array(select workers from o
    */
 
   return NextResponse.json({
-    workers: workersDetails,
+    ownerWorkers,
     message: "This Worked",
     success: true,
   });

@@ -9,8 +9,8 @@ export async function POST(request) {
   } = await supabase.auth.getSession();
   const { id, email } = session.user;
   const workerdata = await request.json();
-
-  console.log(workerdata);
+  // console.log(session.user.id);
+  // console.log(workerdata);
   //   { example response
   //     workerid: "d5fc617c-b543-4d47-aab3-f03fe82a84b2";
   //   }
@@ -18,14 +18,14 @@ export async function POST(request) {
   //here we are updating the array of workers under the head so that all the workers will be under him
   //here we should also write the trigger so that the number of workers in the array of head will be counted
   const query =
-    await client`update head set workers = ARRAY_APPEND(workers,${workerdata.workerid}) where id=${id};`;
-  console.log(query);
+    await client`update head set workers = ARRAY_APPEND(workers,${workerdata.workerid}),noofworkers=noofworkers+1  where id=${id};`;
+  // console.log(query);
   return NextResponse.json({
     everything: "ok",
   });
 }
 
-/** complete logic bull shit for selecting the workers under the heads and taking remianing from the indivdiual workers */
+/** complete logic  for selecting the workers under the heads and taking remianing from the indivdiual workers */
 
 // CREATE OR REPLACE FUNCTION head_add(required_workers int,latitude float,longitude float,id_owner uuid)
 // -- here we will be taking the required number of workers and the id of the owner respectively

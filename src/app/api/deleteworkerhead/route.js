@@ -11,7 +11,7 @@ export async function POST(request) {
   const { id, email } = session.user;
   const workerdata = await request.json();
 
-  console.log(workerdata);
+  // console.log(workerdata);
   //   { example response
   //     workerid: "d5fc617c-b543-4d47-aab3-f03fe82a84b2";
   //   }
@@ -21,8 +21,8 @@ export async function POST(request) {
    */
   try {
     const query =
-      await client`update head set workers = ARRAY_REMOVE(workers,${workerdata.workerid}) where id = ${id}`;
-    console.log(query);
+      await client`update head set workers = ARRAY_REMOVE(workers,${workerdata.workerid}),noofworkers=noofworkers-1 where id = ${id}`;
+    // console.log(query);
   } catch (e) {
     console.log(e);
   }

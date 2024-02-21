@@ -7,6 +7,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import Advantages from "@/components/Advantages";
 import Footer from "@/components/Footer";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 // import { redirect } from "next/navigation";
 const page = async () => {
   // const supabase = createServerComponentClient({ cookies });
@@ -20,15 +21,16 @@ const page = async () => {
   return (
     <>
       <Navbar />
-      <Hero />
-      <Features />
-      <Advantages />
-      <Footer />
-
-      <Link href="/givework">give work</Link>
-      <Link href="/regwork">register for work</Link>
-      <Link href="/reggroup">register Group</Link>
-      <Link href="/reghead">register as a head</Link>
+      <MaxWidthWrapper>
+        <Hero />
+        <Features />
+        <Advantages />
+        <Link href="/givework">give work</Link>
+        <Link href="/regwork">register for work</Link>
+        <Link href="/reggroup">register Group</Link>
+        <Link href="/reghead">register as a head</Link>
+        <Footer />
+      </MaxWidthWrapper>
     </>
   );
 };
