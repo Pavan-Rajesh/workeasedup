@@ -23,6 +23,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { useRouter } from "next/router";
 const Page = () => {
   const [name, setName] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
@@ -35,6 +37,7 @@ const Page = () => {
   const [user, setUser] = useState(null);
   const [pincode, setPincode] = useState(null);
   function manualLocation() {
+    const loading = toast.loading("fetching your location");
     const url = `https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/${pincode}`;
     const options = {
       method: "GET",
@@ -60,6 +63,8 @@ const Page = () => {
           console.log(res);
           const [{ lat, lng }] = res;
           setscplace({ latitude: lat, longitude: lng });
+          toast.success("successfully fetched your location");
+          toast.dismiss(loading);
         });
     } catch (error) {
       console.error(error);
@@ -67,13 +72,17 @@ const Page = () => {
   }
 
   function getUserLocation() {
+    const loading = toast.loading("fetching your location");
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
       // update the value of userlocation variable
       setscplace({ latitude, longitude });
+      toast.success("successfully fetched your location");
+      toast.dismiss(loading);
     });
   }
   function handleSubmit(e) {
+    const loading = toast.loading("fetching your location");
     e.preventDefault();
     const data = {
       name: name,
@@ -84,6 +93,7 @@ const Page = () => {
       numberofworkers,
       workType,
     };
+    console.log(data);
     console.log(JSON.stringify(data));
     fetch("/api/givework", {
       method: "POST",
@@ -92,7 +102,11 @@ const Page = () => {
       },
       body: JSON.stringify(data),
     });
+    toast.success("successfully allocated work");
+    toast.dismiss("loading");
+    router.push("/");
   }
+  const router = useRouter();
 
   useEffect(() => {
     async function hello() {

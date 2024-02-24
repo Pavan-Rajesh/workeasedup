@@ -69,12 +69,12 @@ export default function Login() {
       {/* <Navbar /> */}
 
       <div className="flex justify-center contents-center flex-col w-full px-5 py-2  md:w-2/4">
-        <header className="text-xl font-bold  py-2 mb-5 border-b-2 border-primary flex justify-between items-center">
+        {/* <header className="text-xl font-bold  py-2 mb-5 border-b-2 border-primary flex justify-between items-center">
           <h1>WorkEase - Register</h1>
           <Link href="/" className={buttonVariants({ variant: "link" })}>
             Home
           </Link>
-        </header>
+        </header> */}
         <Formfield>
           <Label>Name</Label>
           <Input type="text" onChange={(e) => setName(e.target.value)} />
@@ -101,12 +101,12 @@ export default function Login() {
         </Formfield>
         <Formfield>
           <Label>Date Of Birth</Label>
-          {/* <Input
+          <Input
             type="date"
             name="date"
             onChange={(e) => setDate(e.target.value)}
-          /> */}
-          <DatePickerDemo />
+          />
+          {/* <DatePickerDemo /> */}
         </Formfield>
         <Formfield>
           <Label>Aadhar</Label>

@@ -11,7 +11,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import Formfield from "@/components/Formfield";
 import { DatePickerDemo } from "@/components/ui/calender";
 import Link from "next/link";
-
+import { toast } from "sonner";
 export default function Login() {
   const [useremail, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -20,11 +20,21 @@ export default function Login() {
   const supabase = createClientComponentClient();
 
   const handleSignIn = async () => {
-    await supabase.auth.signInWithPassword({
+    const loading = toast.loading("signing you in");
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: useremail,
       password,
     });
-    router.refresh();
+
+    if (error) {
+      toast.dismiss(loading);
+      toast.error("invalid credintials");
+    } else {
+      toast.dismiss(loading);
+      toast.success("successfully logged in");
+      router.push("/");
+    }
   };
 
   // const handleSignOut = async () => {
@@ -37,12 +47,12 @@ export default function Login() {
       {/* <Navbar /> */}
 
       <div className="flex justify-center contents-center flex-col w-full px-5 py-2  md:w-2/4">
-        <header className="text-xl font-bold  py-2 mb-5 border-b-2 border-primary flex justify-between items-center">
+        {/* <header className="text-xl font-bold  py-2 mb-5 border-b-2 border-primary flex justify-between items-center">
           <h1>WorkEase - Login</h1>
           <Link href="/" className={buttonVariants({ variant: "link" })}>
             Home
           </Link>
-        </header>
+        </header> */}
 
         <Formfield>
           <Label>Email</Label>
@@ -59,7 +69,7 @@ export default function Login() {
 
         <Formfield>
           <Button className="w-full my-3" onClick={handleSignIn}>
-            Sign up
+            Sign in
           </Button>
         </Formfield>
       </div>

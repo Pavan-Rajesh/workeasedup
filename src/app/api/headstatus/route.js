@@ -8,15 +8,23 @@ export async function GET(request) {
     data: { session },
   } = await supabase.auth.getSession();
   const { id, email } = session.user;
+
   const [{ owner }] = await client`select owner from head where id=${id}`;
-  if (owner) {
-    const ownerData = await client`select * from users where id=${owner}`;
+
+  if (owner == "notassigned") {
     return NextResponse.json({
-      ownerData,
+      owner: {
+        assigned: false,
+      },
     });
   } else {
+    const ownerData =
+      await client`select name,address,aadhar,phone,id from users where id=${owner}`;
     return NextResponse.json({
-      owner: "no owner assigned",
+      owner: {
+        assigned: true,
+        ownerData,
+      },
     });
   }
 }

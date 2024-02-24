@@ -11,13 +11,17 @@ export async function GET(request) {
   const [{ owner }] =
     await client`select owner from workers where userid=${id}`;
   if (owner) {
-    const ownerData = await client`select * from users where id=${owner}`;
+    const ownerData =
+      await client`select name,address,aadhar,phone,id from users where id=${owner}`;
     return NextResponse.json({
-      ownerData,
+      owner: {
+        assigned: true,
+        ownerData,
+      },
     });
   } else {
     return NextResponse.json({
-      owner: "no owner assigned",
+      assigned: false,
     });
   }
 }

@@ -9,36 +9,33 @@ import {
 } from "./ui/card";
 const Features = () => {
   return (
-    <section className="border-2 border-green-600">
-      <Card className="w-80">
+    <section className="flex flex-col gap-5  h-auto">
+      <Card className="w-full h-52 flex  flex-col justify-center">
         <CardHeader>
-          <CardTitle className="text-center">Occupation Matching</CardTitle>
+          <CardTitle className="text-left">Occupation Matching</CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
-        <CardContent className="text-center">
+        <CardContent className="text-left">
           Connects workers and owners based on occupation.
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
-      <Card className="w-80">
+      <Card className="w-full h-52 flex  flex-col justify-center">
         <CardHeader>
-          <CardTitle className="text-center">Distance Matching</CardTitle>
+          <CardTitle className="text-right">Distance Matching</CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
-        <CardContent className="text-center">
+        <CardContent className="text-right">
           Matches workers and owners based on Distance between them.
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
-      <Card className="w-80">
+      <Card className="w-full h-52 flex  flex-col justify-center">
         <CardHeader>
-          <CardTitle className="text-center"> Contractor selection</CardTitle>
+          <CardTitle className="text-left"> Contractor selection</CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
-        <CardContent className="text-center">
+        <CardContent className="text-left">
           Workers can choose Contractors based on their preffered location.
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
     </section>
   );

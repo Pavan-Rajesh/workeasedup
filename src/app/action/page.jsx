@@ -5,7 +5,13 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { redirect } from "next/navigation";
-import { ChevronRight } from "lucide-react";
+import {
+  ChevronRight,
+  Axe,
+  UserCog,
+  MapPin,
+  MessageSquare,
+} from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -21,12 +27,9 @@ const page = async () => {
     data: { session },
   } = await supabase.auth.getSession();
 
-  if (!session) {
-    redirect("/register/reg");
-  }
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <MaxWidthWrapper>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 grid-rows-2 pt-10">
           <Link href="/allocatework">
@@ -34,10 +37,7 @@ const page = async () => {
               <CardHeader>
                 <CardTitle>
                   Allocate work
-                  <ChevronRight
-                    strokeWidth={1}
-                    className="absolute top-5 right-8"
-                  />
+                  <Axe strokeWidth={2} className="absolute top-5 right-8" />
                 </CardTitle>
                 <CardDescription></CardDescription>
               </CardHeader>
@@ -100,10 +100,7 @@ const page = async () => {
               <CardHeader>
                 <CardTitle>
                   Modify workers
-                  <ChevronRight
-                    strokeWidth={1}
-                    className="absolute top-5 right-8"
-                  />
+                  <UserCog strokeWidth={2} className="absolute top-5 right-8" />
                 </CardTitle>
                 <CardDescription></CardDescription>
               </CardHeader>
@@ -118,15 +115,12 @@ const page = async () => {
               </CardFooter>
             </Card>
           </Link>
-          <Link href="#">
+          <Link href="/map">
             <Card className="relative">
               <CardHeader>
                 <CardTitle>
                   Visualize Locations
-                  <ChevronRight
-                    strokeWidth={1}
-                    className="absolute top-5 right-8"
-                  />
+                  <MapPin strokeWidth={2} className="absolute top-5 right-8" />
                 </CardTitle>
                 <CardDescription></CardDescription>
               </CardHeader>
@@ -143,8 +137,8 @@ const page = async () => {
               <CardHeader>
                 <CardTitle>
                   Give Rating
-                  <ChevronRight
-                    strokeWidth={1}
+                  <MessageSquare
+                    strokeWidth={2}
                     className="absolute top-5 right-8"
                   />
                 </CardTitle>
@@ -200,7 +194,7 @@ const page = async () => {
             </h3>
           </div>
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </MaxWidthWrapper>
     </>
   );

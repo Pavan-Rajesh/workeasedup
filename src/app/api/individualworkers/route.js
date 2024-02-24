@@ -15,8 +15,13 @@ export async function GET(request) {
    *   here the query should be modified so that we will be getting all the workers that are assigned to head
    *
    */
-  const workers =
-    await client`select workers from owners_duplicate where userid=${id}`;
+  const workers = await client`SELECT name,phone,aadhar,id
+FROM users
+WHERE id in (
+    SELECT unnest(workers) 
+    FROM owners_duplicate
+    WHERE userid = ${id}::uuid
+);`;
 
   return NextResponse.json({
     workers,

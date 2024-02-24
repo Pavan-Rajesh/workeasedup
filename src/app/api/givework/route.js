@@ -44,11 +44,11 @@ export async function POST(request) {
                     ${latitude},${longitude}
                 ),
                 4326)::geometry,null,${ownerData.startDate},${ownerData.endDate},${ownerData.numberofworkers},${ownerData.workType},${ownerData.numberofworkers})`);
-  console.log(`insert into owners_duplicate (userid,ownername,phonenumber,scplace,workers,startdate,enddate,noworkersreq,worktype,dupreq) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
-                ST_MakePoint(
-                    ${latitude},${longitude}
-                ),
-                4326)::geometry,null,${ownerData.startDate},${ownerData.endDate},${ownerData.numberofworkers},${ownerData.workType},${ownerData.numberofworkers})`);
+  // console.log(`insert into owners_duplicate (userid,ownername,phonenumber,scplace,workers,startdate,enddate,noworkersreq,worktype,dupreq) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
+  //               ST_MakePoint(
+  //                   ${latitude},${longitude}
+  //               ),
+  //               4326)::geometry,null,${ownerData.startDate},${ownerData.endDate},${ownerData.numberofworkers},${ownerData.workType},${ownerData.numberofworkers})`);
   // const query =
   //   await db.execute(sql`select ST_AsGeoJSON(scplace),userid,noworkersreq,worktype from owners_duplicate where ST_DWithin(
   //         	owners_duplicate.scplace,

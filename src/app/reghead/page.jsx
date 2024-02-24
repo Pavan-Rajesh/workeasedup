@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Fromfield from "@/components/Formfield";
+import { toast } from "sonner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,9 +27,11 @@ const Page = () => {
        * update the value of userlocation variable
        * */
       setscplace({ latitude, longitude });
+      toast.dismiss(loading);
+      toast.success("successfully fetched you location");
     });
   }
-  function manualLocation() {
+  async function manualLocation() {
     const url = `https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/${pincode}`;
     const options = {
       method: "GET",
@@ -40,7 +43,9 @@ const Page = () => {
     };
 
     try {
-      const response = fetch(url, options)
+      const loading = toast.loading("fetching you location");
+
+      const response = await fetch(url, options)
         .then((res) => res)
         .then((res) => {
           return res.json();
@@ -55,24 +60,29 @@ const Page = () => {
           console.log(res);
           setscplace({ latitude: lat, longitude: lng });
         });
+      toast.dismiss(loading);
+      toast.success("successfully fetched you location");
     } catch (error) {
       console.error(error);
     }
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
+    const loading = toast.loading("processing");
     e.preventDefault();
     const data = {
       headname: name,
       worktype,
       scplace,
     };
-    fetch("/api/reghead", {
+    await fetch("/api/reghead", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
+    toast.dismiss(loading);
+    toast.success("successfully registered");
   }
   return (
     <>

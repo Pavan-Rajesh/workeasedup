@@ -4,7 +4,7 @@
  *
  *
  */
-"use client";
+
 import {
   Card,
   CardHeader,
@@ -14,37 +14,33 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 const Page = () => {
-  const [workersDetails, setWorkersDetails] = useState([]);
-  const [head, setHeadDetails] = useState([]);
-  const [headWorkers, setheadWorkers] = useState([]);
+  // const [workersDetails, setWorkersDetails] = useState([]);
+  // const [head, setHeadDetails] = useState([]);
+  // const [headWorkers, setheadWorkers] = useState([]);
 
-  useEffect(() => {
-    async function fetchWorkersworked() {
-      fetch("http://localhost:3000/api/ownerdash")
-        .then((data) => data.json())
-        .then((data) => {
-          /**
-           *  here we will be selecting data.workers because we will be sending with some data from backend 
-           *  return NextResponse.json({
-           *    workers: workersDetails,
-           *     message: "This Worked",
-           *     success: true,
-  });
-           * 
-           */
-          // console.log(data.ownerWorkers);
-          setWorkersDetails(data.ownerWorkers[0].workers);
-          setHeadDetails(data.ownerWorkers[0].head);
-          setheadWorkers(data.ownerWorkers[0].headWorkers);
-        });
-    }
-    fetchWorkersworked();
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:3000/api/ownerdash")
+  //     .then((data) => data.json())
+  //     .then((data) => {
+  //       /**
+  //          *  here we will be selecting data.workers because we will be sending with some data from backend
+  //          *  return NextResponse.json({
+  //          *    workers: workersDetails,
+  //          *     message: "This Worked",
+  //          *     success: true,
+  // });
+  //          *
+  //          */
+  //       // console.log(data.ownerWorkers);
+  //       setWorkersDetails(data.ownerWorkers[0].workers);
+  //       setHeadDetails(data.ownerWorkers[0].head);
+  //       setheadWorkers(data.ownerWorkers[0].headWorkers);
+  //     });
+  // }, []);
 
   return (
     <div className="grid gap-5 grid-cols-1  md:grid-cols-2 pt-10 w-full">

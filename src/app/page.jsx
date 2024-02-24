@@ -20,17 +20,15 @@ const page = async () => {
   // }
   return (
     <>
-      <Navbar />
-      <MaxWidthWrapper>
-        <Hero />
-        <Features />
-        <Advantages />
-        <Link href="/givework">give work</Link>
-        <Link href="/regwork">register for work</Link>
-        <Link href="/reggroup">register Group</Link>
-        <Link href="/reghead">register as a head</Link>
-        <Footer />
-      </MaxWidthWrapper>
+      {/* <Navbar /> */}
+      <Hero />
+      <Features />
+      {/* <Advantages /> */}
+      {/* <Link href="/givework">give work</Link>
+      <Link href="/regwork">register for work</Link>
+      <Link href="/reggroup">register Group</Link>
+      <Link href="/reghead">register as a head</Link> */}
+      {/* <Footer /> */}
     </>
   );
 };

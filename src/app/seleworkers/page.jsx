@@ -6,6 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { toast } from "sonner";
 
 import Fromfield from "@/components/Formfield";
 const Page = () => {
@@ -14,11 +15,12 @@ const Page = () => {
   const [worker, setWorker] = useState([
     { workername: "xxxx", phonenumber: "xxxxxx" },
   ]);
-  function searchWorker() {
+  async function searchWorker() {
     // here debouncing and throttling must be used to optimised
     setLoading(true);
+    const loading = toast.loading("fetching user");
 
-    fetch(`/api/findworker?id=${data}`, {
+    await fetch(`/api/findworker?id=${data}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -32,9 +34,12 @@ const Page = () => {
         setWorker(data.data);
         setLoading(false);
       });
+    toast.dismiss(loading);
+    toast.success("worker successfully fetched");
   }
-  function addWorkertohead() {
-    fetch("/api/addworkerhead", {
+  async function addWorkertohead() {
+    const loading = toast.loading("adding worker");
+    await fetch("/api/addworkerhead", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,9 +48,12 @@ const Page = () => {
         workerid: data,
       }),
     });
+    toast.dismiss(loading);
+    toast.success("worker successfully added");
   }
-  function removeWorker() {
-    fetch("/api/deleteworkerhead", {
+  async function removeWorker() {
+    const loading = toast.loading("removing worker");
+    await fetch("/api/deleteworkerhead", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,6 +62,8 @@ const Page = () => {
         workerid: data,
       }),
     });
+    toast.dismiss(loading);
+    toast.success("worker successfully removed");
   }
 
   return (

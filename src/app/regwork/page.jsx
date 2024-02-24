@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import Fromfield from "@/components/Formfield";
+import { useRouter } from "next/router";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +25,10 @@ const Page = () => {
   const [scplace, setscplace] = useState(null);
   const [pincode, setPincode] = useState(null);
   const [typeofwork, setTypeOfwork] = useState(null);
+  const router = useRouter();
+
   function getUserLocation() {
+    const loading = toast.loading("fetching position");
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
       /**
@@ -31,8 +36,11 @@ const Page = () => {
        * */
       setscplace({ latitude, longitude });
     });
+    toast.dismiss("loading");
+    toast.success("successfully fetched the position");
   }
-  function manualLocation() {
+  async function manualLocation() {
+    const loading = toast.loading("fetching position");
     const url = `https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/${pincode}`;
     const options = {
       method: "GET",
@@ -44,7 +52,7 @@ const Page = () => {
     };
 
     try {
-      const response = fetch(url, options)
+      const response = await fetch(url, options)
         .then((res) => res)
         .then((res) => {
           return res.json();
@@ -58,12 +66,15 @@ const Page = () => {
           const [{ lat, lng }] = res;
           setscplace({ latitude: lat, longitude: lng });
         });
+      toast.dismiss("loading");
+      toast.success("successfully fetched the position");
     } catch (error) {
       console.error(error);
     }
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
+    const loading = toast.loading("processed");
     e.preventDefault();
     const data = {
       name: name,
@@ -72,7 +83,7 @@ const Page = () => {
       typeofwork,
     };
     console.log(JSON.stringify(data));
-    fetch("/api/registerwork", {
+    await fetch("/api/registerwork", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,6 +96,9 @@ const Page = () => {
       .then((data) => {
         console.log(data);
       });
+    toast.dismiss("loading");
+    toast.success("successn");
+    router.push("/");
   }
 
   return (
