@@ -2,7 +2,7 @@
  * For giving work to others
  *
  *
- * */
+ */
 
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -10,9 +10,10 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sql } from "drizzle-orm";
 import { db } from "@/db";
 import { client } from "@/db";
+export const dynamic = "force-dynamic";
 export async function POST(request) {
   const ownerData = await request.json();
-
+  console.log(ownerData);
   const supabase = createServerComponentClient({ cookies });
   const {
     data: { session },
@@ -20,7 +21,7 @@ export async function POST(request) {
 
   const { id, email } = session.user;
   const { latitude, longitude } = ownerData.coords;
-  const { phoneNumber } = ownerData;
+  const { phoneNumber, workType } = ownerData;
 
   /**
    *  Here If a new worker mentioned a work then we will be calculating if there are any wokers near to that workers
@@ -32,10 +33,6 @@ export async function POST(request) {
    *  Finding Workers near to owner and the and we have to limit the number of workers to the requirement of workers and order by the date of registration of workers and limit them to the required number of workers
    *
    */
-  const results = await db.execute(sql`select * from workers where ST_DWithin(
-            	workers.scplace,
-		              ST_SetSRID(ST_MakePoint(${latitude},${longitude}),4326),
-	                  300000)`);
 
   /**
    *   if there are  workers near to owner then we will form the array of workers and remove them from the workers table    *   and push it into the workers table
@@ -43,44 +40,26 @@ export async function POST(request) {
    *
    */
 
-  if (results.length > 0) {
-    let myuuidArr = [];
-    for (let i = 0; i < results.length; i++) {
-      myuuidArr.push(results[i].userid);
-    }
-
-    // await db.execute(sql`insert into owners_duplicate (userid,ownername,phonenumber,scplace,workers,startdate,enddate) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
-    //             ST_MakePoint(
-    //                 ${latitude},${longitude}
-    //             ),
-    //             4326)::geometry,ARRAY[${myuuidArr.join(",")}]::text[],${
-    //   ownerData.startDate
-    // },${ownerData.endDate})`);
-    await client`insert into owners_duplicate (userid,ownername,phonenumber,scplace,workers,startdate,enddate,noworkersreq,worktype) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
+  await db.execute(sql`insert into owners_duplicate (userid,ownername,phonenumber,scplace,workers,startdate,enddate,noworkersreq,worktype,dupreq) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
                 ST_MakePoint(
                     ${latitude},${longitude}
                 ),
-                4326)::geometry,${myuuidArr},${ownerData.startDate},${ownerData.endDate},2,'carpenter')`;
-    console.log(myuuidArr);
+                4326)::geometry,null,${ownerData.startDate},${ownerData.endDate},${ownerData.numberofworkers},${ownerData.workType},${ownerData.numberofworkers})`);
+  // console.log(`insert into owners_duplicate (userid,ownername,phonenumber,scplace,workers,startdate,enddate,noworkersreq,worktype,dupreq) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
+  //               ST_MakePoint(
+  //                   ${latitude},${longitude}
+  //               ),
+  //               4326)::geometry,null,${ownerData.startDate},${ownerData.endDate},${ownerData.numberofworkers},${ownerData.workType},${ownerData.numberofworkers})`);
+  // const query =
+  //   await db.execute(sql`select ST_AsGeoJSON(scplace),userid,noworkersreq,worktype from owners_duplicate where ST_DWithin(
+  //         	owners_duplicate.scplace,
+  //               ST_SetSRID(ST_MakePoint(${latitude},${longitude}),4326),
+  //                 300000) and worktype=${workType} and noworkersreq>0 order by dateofregistration limit 1`);
 
-    //!!!! caution here we should also include the head id in the table field of owner so the head that is assigned will be known to the owner
+  const updateTables =
+    await db.execute(sql`select your_function_name_ver3(${ownerData.numberofworkers},${latitude},${longitude},${id},${ownerData.workType});
+     `);
 
-    // await client`update owners_duplicate `;
-    // await client`insert into owners_duplicate (userid,ownername,phonenumber,scplace,workers,startdate,enddate) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
-    //             ST_MakePoint(
-    //                 ${latitude},${longitude}
-    //             ),
-    //             4326)::geometry,${myuuidArr},${ownerData.startDate},${ownerData.endDate})`;
-  } else {
-    /**
-     *  else is executed if there are no workers near him
-     */
-    await db.execute(sql`insert into owners_duplicate (userid,ownername,phonenumber,scplace,workers,startdate,enddate,noworkersreq,worktype) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
-                ST_MakePoint(
-                    ${latitude},${longitude}
-                ),
-                4326)::geometry,null,${ownerData.startDate},${ownerData.endDate},2,'carpenter')`);
-  }
   return NextResponse.json({ message: "This Worked", success: true });
 }
 

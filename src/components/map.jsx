@@ -33,13 +33,19 @@ const Page = () => {
     });
   const workerIcon = () =>
     L.icon({
-      iconUrl: "marker-icon-2x-red.png",
-      iconSize: [20, 30],
+      iconUrl: "pin.png",
+      iconSize: [30, 30],
+    });
+  const headIcon = () =>
+    L.icon({
+      iconUrl: "greenpin.png",
+      iconSize: [30, 30],
     });
   function processCombinedLocations(GeoJSONResponse) {
     const ownerLocations = GeoJSONResponse.ownerLocations;
     const workerLocations = GeoJSONResponse.workerLocations;
-    // console.log(GeoJSONResponse);
+    const headLocations = GeoJSONResponse.headLocations;
+    console.log(GeoJSONResponse);
     const mainGeoJSON = {
       type: "FeatureCollection",
       name: "USLabels",
@@ -63,6 +69,7 @@ const Page = () => {
           snippet: "",
           ownername: ownerLocation.ownername,
           phonenumber: ownerLocation.phonenumber,
+          noworkersreq: ownerLocation.noworkersreq,
           owner: true,
           worker: false,
         },
@@ -86,12 +93,34 @@ const Page = () => {
           snippet: "",
           owner: false,
           worker: true,
+          workername: workerLocation.workername,
+          phonenumber: workerLocation.phonenumber,
         },
         geometry: JSON.parse(workerLocation.st_asgeojson),
       });
     });
+    headLocations.forEach((headLocation) => {
+      const coordData = JSON.parse(headLocation.st_asgeojson);
+      coordData.coordinates.push(0);
+      mainGeoJSON.features.push({
+        type: "Feature",
+        properties: {
+          Name: "AK",
+          description: "Alaska",
+          extrude: "0",
+          visibility: "-1",
+          snippet: "",
+          owner: false,
+          worker: false,
+          head: true,
+          headname: headLocation.name,
+          phonenumber: headLocation.phonenumber,
+        },
+        geometry: JSON.parse(headLocation.st_asgeojson),
+      });
+    });
     // console.log(fake);
-    // console.log(JSON.stringify(mainGeoJSON));
+    console.log(JSON.stringify(mainGeoJSON));
     setgeoJSONme(mainGeoJSON);
   }
 
@@ -101,7 +130,7 @@ const Page = () => {
         return res.json();
       })
       .then((res) => {
-        // console.log(res);
+        console.log(res);
 
         processCombinedLocations(res);
       });
@@ -120,17 +149,42 @@ const Page = () => {
         {
           icon: workerIcon(geojsonPoint.properties.Name),
         }
-      ).bindTooltip();
-    } else {
+      ).bindTooltip(
+        `<b>Name</b>: ${geojsonPoint.properties.workername}  <br><b>PhoneNumber</b>: ${geojsonPoint.properties.phonenumber} `,
+        { direction: "top" }
+      );
+    } else if (
+      geojsonPoint.properties.owner == true &&
+      geojsonPoint.properties.worker == false
+    ) {
       console.log(geojsonPoint);
       return L.marker(
         { lat: latlng.lng, lng: latlng.lat },
         {
           icon: customMarkerIcon(geojsonPoint.properties.Name),
         }
-      ).bindTooltip(
-        `${geojsonPoint.properties.ownername}   ${geojsonPoint.properties.phonenumber}`
-      );
+      )
+        .bindTooltip(
+          `<b>Name</b>: ${geojsonPoint.properties.ownername} <br> <b>Required workers</b>: ${geojsonPoint.properties.noworkersreq} <br><b>PhoneNumber</b>: ${geojsonPoint.properties.phonenumber}`,
+          { direction: "top" }
+        )
+        .on("click", (data) => {
+          console.log(data);
+        });
+    } else {
+      return L.marker(
+        { lat: latlng.lng, lng: latlng.lat },
+        {
+          icon: headIcon(geojsonPoint.properties.headname),
+        }
+      )
+        .bindTooltip(
+          `<b>Name</b>: ${geojsonPoint.properties.headname} <br><b>PhoneNumber</b>: ${geojsonPoint.properties.phonenumber}`,
+          { direction: "top" }
+        )
+        .on("click", (data) => {
+          console.log(data);
+        });
     }
   }
 
@@ -139,7 +193,7 @@ const Page = () => {
       <MapContainer
         center={{ lat: 50, lng: 30 }}
         zoom={1}
-        style={{ height: "100vh" }}
+        style={{ width: "100%", height: "100%" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
