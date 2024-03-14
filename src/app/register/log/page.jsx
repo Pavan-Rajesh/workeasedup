@@ -1,7 +1,5 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,8 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Formfield from "@/components/Formfield";
-import { DatePickerDemo } from "@/components/ui/calender";
-import Link from "next/link";
+import validator from "validator";
 import { toast } from "sonner";
 export default function Login() {
   const [useremail, setEmail] = useState(null);
@@ -20,8 +17,11 @@ export default function Login() {
   const supabase = createClientComponentClient();
 
   const handleSignIn = async () => {
+    if (!validator.isEmail(useremail)) {
+      toast.error("enter valid email");
+      return;
+    }
     const loading = toast.loading("signing you in");
-
     const { data, error } = await supabase.auth.signInWithPassword({
       email: useremail,
       password,

@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import validator from "validator";
 
 const Page = () => {
   const [name, setName] = useState(null);
@@ -21,6 +22,7 @@ const Page = () => {
   const [scplace, setscplace] = useState(null);
   const [pincode, setPincode] = useState(null);
   function getUserLocation() {
+    const loading = toast.loading("fetching you location");
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
       /**
@@ -32,6 +34,10 @@ const Page = () => {
     });
   }
   async function manualLocation() {
+    if (!pincode || !validator.isLength(pincode, { min: 6, max: 6 })) {
+      toast.error("enter valid pincode");
+      return;
+    }
     const url = `https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/${pincode}`;
     const options = {
       method: "GET",
@@ -45,7 +51,7 @@ const Page = () => {
     try {
       const loading = toast.loading("fetching you location");
 
-      const response = await fetch(url, options)
+      await fetch(url, options)
         .then((res) => res)
         .then((res) => {
           return res.json();
@@ -67,7 +73,13 @@ const Page = () => {
     }
   }
   async function handleSubmit(e) {
+    e.preventDefault();
+    if (!name || !worktype || !scplace) {
+      toast.error("fields shouldnt be empty");
+      return;
+    }
     const loading = toast.loading("processing");
+
     e.preventDefault();
     const data = {
       headname: name,

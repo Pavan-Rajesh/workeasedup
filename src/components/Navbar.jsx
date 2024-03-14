@@ -130,7 +130,7 @@ const Navbar = () => {
                 </SheetHeader>
               </SheetContent>
             </Sheet>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger>Open</DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -202,7 +202,7 @@ const Navbar = () => {
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
             <div>
               <ThemeToggler />
             </div>

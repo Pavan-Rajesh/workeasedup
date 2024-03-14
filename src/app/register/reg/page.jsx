@@ -1,7 +1,5 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,9 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Formfield from "@/components/Formfield";
-import { DatePickerDemo } from "@/components/ui/calender";
-import Link from "next/link";
-import { useMutation } from "@tanstack/react-query";
+import validator from "validator";
+import { toast } from "sonner";
+
 export default function Login() {
   const [useremail, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -25,6 +23,41 @@ export default function Login() {
   const supabase = createClientComponentClient();
 
   const handleSignUp = async () => {
+    if (
+      !date ||
+      !address ||
+      !useremail ||
+      !name ||
+      !password ||
+      !aadhar ||
+      !phonenumber
+    ) {
+      toast.error("fields should be empty");
+      return;
+    }
+    if (!validator.isEmail(useremail)) {
+      toast.error("email is invalid");
+      return;
+    }
+    if (!validator.isStrongPassword(password)) {
+      toast.error("enter strong password");
+      return;
+    }
+    if (
+      !validator.isLength(phonenumber, { min: 10, max: 10 }) ||
+      !validator.isNumeric(phonenumber)
+    ) {
+      toast.error("enter valid mobile number");
+      return;
+    }
+    if (
+      !validator.isLength(aadhar, { min: 12, max: 12 }) ||
+      !validator.isNumeric(phonenumber)
+    ) {
+      toast.error("enter valid aadhar number");
+      return;
+    }
+    const signup = toast.loading("signingup");
     await supabase.auth.signUp({
       email: useremail,
       password,
@@ -41,13 +74,14 @@ export default function Login() {
       phonenumber,
       useremail,
     };
-    fetch("/api/signup", {
+    await fetch("/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(userData),
     });
+    toast.dismiss(signup);
     router.refresh();
   };
 
@@ -77,7 +111,11 @@ export default function Login() {
         </header> */}
         <Formfield>
           <Label>Name</Label>
-          <Input type="text" onChange={(e) => setName(e.target.value)} />
+          <Input
+            type="text"
+            required
+            onChange={(e) => setName(e.target.value)}
+          />
         </Formfield>
         <Formfield>
           <Label>Email</Label>

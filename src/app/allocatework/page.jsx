@@ -24,7 +24,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import validator from "validator";
+
 const Page = () => {
   const [name, setName] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
@@ -37,6 +39,14 @@ const Page = () => {
   const [user, setUser] = useState(null);
   const [pincode, setPincode] = useState(null);
   function manualLocation() {
+    if (
+      !pincode ||
+      !validator.isLength(pincode, { min: 5, max: 6 }) ||
+      !validator.isNumeric(pincode)
+    ) {
+      toast.error("enter valid pincode");
+      return;
+    }
     const loading = toast.loading("fetching your location");
     const url = `https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/${pincode}`;
     const options = {
@@ -81,8 +91,35 @@ const Page = () => {
       toast.dismiss(loading);
     });
   }
-  function handleSubmit(e) {
-    const loading = toast.loading("fetching your location");
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (
+      !startDate ||
+      !endDate ||
+      !name ||
+      !workType ||
+      !numberofworkers ||
+      !phoneNumber ||
+      !scplace
+    ) {
+      toast.error("fields should be empty");
+      return;
+    }
+
+    if (
+      !validator.isLength(phoneNumber, { min: 10, max: 10 }) ||
+      !validator.isNumeric(phoneNumber)
+    ) {
+      toast.error("enter valid mobile number");
+      return;
+    }
+    if (!validator.isNumeric(numberofworkers)) {
+      toast.error("enter valid aadhar number");
+      return;
+    }
+
+    const loading = toast.loading("allocating the work");
+
     e.preventDefault();
     const data = {
       name: name,
@@ -93,17 +130,18 @@ const Page = () => {
       numberofworkers,
       workType,
     };
-    console.log(data);
-    console.log(JSON.stringify(data));
-    fetch("/api/givework", {
+    // console.log(data);
+    // console.log(JSON.stringify(data));
+    await fetch("/api/givework", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
+    toast.dismiss(loading);
     toast.success("successfully allocated work");
-    toast.dismiss("loading");
+
     router.push("/");
   }
   const router = useRouter();

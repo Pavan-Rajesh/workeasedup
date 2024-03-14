@@ -19,6 +19,8 @@ export async function POST(request) {
   //here we should also write the trigger so that the number of workers in the array of head will be counted
   const query =
     await client`update head set workers = ARRAY_APPEND(workers,${workerdata.workerid}),noofworkers=noofworkers+1  where id=${id};`;
+  const query2 =
+    await client`update workers set head=${id} where userid=${workerdata.workerid}`;
   // console.log(query);
   return NextResponse.json({
     everything: "ok",

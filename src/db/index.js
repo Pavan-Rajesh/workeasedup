@@ -9,3 +9,7 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: { persistSession: false },
 });
+export const twilioClient = require("twilio")(
+  process.env.NEXT_PUBLIC_TWILIOSID,
+  process.env.NEXT_PUBLIC_TWILIOAUTHTOKEN
+);

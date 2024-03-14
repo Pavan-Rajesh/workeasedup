@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useRouter } from "next/router";
+import validator from "validator";
 const Page = ({ params }) => {
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(null);
   const [headid, setHeadid] = useState(params.headid);
   const router = useRouter();
   const [data, setData] = useState({
@@ -29,6 +30,10 @@ const Page = ({ params }) => {
   }, []);
 
   async function submitRating() {
+    if (!validator.isNumeric(rating) || !rating) {
+      toast.error("enter valid rating");
+      return;
+    }
     const loading = toast.loading("processing");
     await fetch("/api/individualhead", {
       method: "POST",

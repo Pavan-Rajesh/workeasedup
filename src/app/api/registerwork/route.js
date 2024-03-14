@@ -4,6 +4,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sql } from "drizzle-orm";
 import { db } from "@/db";
 import { client } from "@/db";
+import { twilioClient } from "@/db";
 
 export async function POST(request) {
   const workerData = await request.json();
@@ -29,7 +30,16 @@ export async function POST(request) {
       success: true,
     });
   }
-
+  // await twilioClient.messages
+  //   .create({
+  //     from: "+12518424997",
+  //     body: "successfully Registered as worker and will be notified if any owner is assigned to you team workEase",
+  //     to: `+91${phoneNumber}`,
+  //   })
+  //   .then((x) => console.log(x.body))
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
   await db.execute(sql`insert into workers (userid,workername,phonenumber,scplace,worktype) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
                 ST_MakePoint(
                     ${latitude},${longitude}

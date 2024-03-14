@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 const Page = () => {
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(null);
   const [heads, setHeads] = useState([]);
   useEffect(() => {
     async function fetchheads() {

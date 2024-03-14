@@ -23,6 +23,8 @@ export async function POST(request) {
     const query =
       await client`update head set workers = ARRAY_REMOVE(workers,${workerdata.workerid}),noofworkers=noofworkers-1 where id = ${id}`;
     // console.log(query);
+    const query2 =
+      await client`update workers set head=null where userid=${workerdata.workerid}`;
   } catch (e) {
     console.log(e);
   }

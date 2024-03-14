@@ -1,11 +1,35 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button, buttonVariants } from "./ui/button";
 import { Youtube, Facebook } from "lucide-react";
+import { toast } from "sonner";
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  async function subscribe() {
+    const loading = toast.loading("adding to the list");
+    await fetch("/api/mailchimp", {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.subscribe) {
+          toast.dismiss(loading);
+          toast.success("successfully added to the list");
+        } else if (res.error) {
+          toast.dismiss(loading);
+          toast.error("something wrong happend");
+        }
+      });
+  }
   return (
     <footer className="border-t-2 border-primary grid md:grid-cols-3 my-5">
       <div className="items-start my-4">
@@ -13,9 +37,19 @@ const Footer = () => {
           Subscribe for a Newsletter :
         </Label>
 
-        <Input type="email" placeholder="Email" className="my-3 w-10/12" />
+        <Input
+          type="email"
+          placeholder="Email"
+          className="my-3 w-10/12"
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+        />
         <Button
           className={buttonVariants({ variant: "secondary", size: "sm" })}
+          onClick={() => {
+            subscribe();
+          }}
         >
           Subscribe
         </Button>
@@ -58,14 +92,15 @@ const Footer = () => {
           Contact us
         </span>
         <p className="my-3">
-          Written by <a href="mailto:webmaster@example.com">Jon Doe</a>.<br />
+          Product by<a href="mailto:webmaster@example.com"> WorkEase INC</a>.
+          <br />
           Visit us at:
           <br />
-          Example.com
+          Inc@workease.com
           <br />
-          Box 564, Disneyland
+          RJY
           <br />
-          USA
+          India
         </p>
       </div>
     </footer>

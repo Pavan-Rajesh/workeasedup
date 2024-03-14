@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import Fromfield from "@/components/Formfield";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import validator from "validator";
 
 const Page = () => {
   const [name, setName] = useState(null);
@@ -35,11 +36,19 @@ const Page = () => {
        * update the value of userlocation variable
        * */
       setscplace({ latitude, longitude });
+      toast.dismiss(loading);
+      toast.success("successfully fetched the position");
     });
-    toast.dismiss("loading");
-    toast.success("successfully fetched the position");
   }
   async function manualLocation() {
+    if (
+      !pincode ||
+      !validator.isLength(pincode, { min: 6, max: 6 }) ||
+      !validator.isNumeric(pincode)
+    ) {
+      toast.error("enter valid pincode");
+      return;
+    }
     const loading = toast.loading("fetching position");
     const url = `https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/${pincode}`;
     const options = {
@@ -66,7 +75,7 @@ const Page = () => {
           const [{ lat, lng }] = res;
           setscplace({ latitude: lat, longitude: lng });
         });
-      toast.dismiss("loading");
+      toast.dismiss(loading);
       toast.success("successfully fetched the position");
     } catch (error) {
       console.error(error);
@@ -74,8 +83,21 @@ const Page = () => {
   }
 
   async function handleSubmit(e) {
-    const loading = toast.loading("processed");
     e.preventDefault();
+    if (!typeofwork || !name || !phoneNumber || !scplace) {
+      toast.error("fields should be empty");
+      return;
+    }
+
+    if (
+      !validator.isLength(phoneNumber, { min: 10, max: 10 }) ||
+      !validator.isNumeric(phoneNumber)
+    ) {
+      toast.error("enter valid phone number");
+      return;
+    }
+    const loading = toast.loading("processing");
+
     const data = {
       name: name,
       phoneNumber: phoneNumber,
@@ -96,8 +118,8 @@ const Page = () => {
       .then((data) => {
         console.log(data);
       });
-    toast.dismiss("loading");
-    toast.success("successn");
+    toast.dismiss(loading);
+    toast.success("successfully Registered");
     router.push("/");
   }
 
