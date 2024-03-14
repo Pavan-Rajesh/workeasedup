@@ -22,6 +22,7 @@ const Page = () => {
   // const [head, setHeadDetails] = useState([]);
   // const [headWorkers, setheadWorkers] = useState([]);
 
+
   // useEffect(() => {
   //   fetch("http://localhost:3000/api/ownerdash")
   //     .then((data) => data.json())
@@ -41,6 +42,28 @@ const Page = () => {
   //       setheadWorkers(data.ownerWorkers[0].headWorkers);
   //     });
   // }, []);
+
+//   useEffect(() => {
+//     async function fetchWorkersworked() {
+//       fetch("/api/ownerdash")
+//         .then((data) => data.json())
+//         .then((data) => {
+//           /**
+//            *  here we will be selecting data.workers because we will be sending with some data from backend 
+//            *  return NextResponse.json({
+//            *    workers: workersDetails,
+//            *     message: "This Worked",
+//            *     success: true,
+//   });
+//            * 
+//            */
+//           setWorkersDetails(data.workers);
+//           console.log(data.workers);
+//         });
+//     }
+//     fetchWorkersworked();
+//   }, []);
+
 
   return (
     <div className="grid gap-5 grid-cols-1  md:grid-cols-2 pt-10 w-full">

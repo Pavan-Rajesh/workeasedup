@@ -17,9 +17,16 @@ const page = async () => {
   //   data: { session },
   // } = await supabase.auth.getSession();
 
+// <<<<<<< deploy
   // if (!session) {
   //   redirect("/login");
   // }
+// =======
+//   if (!session) {
+//     redirect("/login");
+//   }
+
+// >>>>>>> main
   return (
     <>
       {/* <Navbar /> */}
