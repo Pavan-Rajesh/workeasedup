@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { db } from "@/db";
 import { sql } from "drizzle-orm";
 import { client } from "@/db";
+export const dynamic = "force-dynamic";
 export async function POST(request) {
   const supabase = createServerComponentClient({ cookies });
   const {

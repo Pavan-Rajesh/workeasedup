@@ -18,3 +18,4 @@ export async function GET(req) {
     headLocations,
   });
 }
+export const dynamic = "force-dynamic";

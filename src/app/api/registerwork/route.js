@@ -5,7 +5,7 @@ import { sql } from "drizzle-orm";
 import { db } from "@/db";
 import { client } from "@/db";
 import { twilioClient } from "@/db";
-
+export const dynamic = "force-dynamic";
 export async function POST(request) {
   const workerData = await request.json();
   // console.log(workerData);

@@ -8,7 +8,7 @@
 //   });
 //   return new Response(JSON.stringify(Myuser));
 // }
-
+export const dynamic = "force-dynamic";
 export async function GET(request) {
   return new Response(JSON.stringify({ pavan: "rajesh" }));
 }

@@ -7,3 +7,4 @@ export async function POST(request) {
   console.log(headData);
   return NextResponse.json({ headData });
 }
+export const dynamic = "force-dynamic";

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { client, db } from "@/db";
+export const dynamic = "force-dynamic";
 export async function GET(request) {
   const supabase = createServerComponentClient({ cookies });
   const {

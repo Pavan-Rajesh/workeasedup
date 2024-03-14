@@ -4,6 +4,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { sql } from "drizzle-orm";
 import { db } from "@/db";
+export const dynamic = "force-dynamic";
 export async function POST(request) {
   const supabase = createServerComponentClient({ cookies });
   const {

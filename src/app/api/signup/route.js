@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/db";
-
+export const dynamic = "force-dynamic";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 export async function POST(request) {

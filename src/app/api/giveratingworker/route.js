@@ -5,3 +5,4 @@ export async function POST(request) {
     ok: "ok",
   });
 }
+export const dynamic = "force-dynamic";
