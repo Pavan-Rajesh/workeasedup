@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Formfield from "@/components/Formfield";
 import { Label } from "@/components/ui/label";
