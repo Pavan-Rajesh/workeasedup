@@ -37,7 +37,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      setEmail(session.user.email);
+      setEmail(session?.user?.email);
     });
 
     // async function getUser() {
@@ -124,6 +124,15 @@ const Navbar = () => {
                         })}
                       >
                         Check Status (Worker)
+                      </Link>
+                      <Link
+                        href={"/search"}
+                        className={buttonVariants({
+                          variant: "link",
+                          size: "lg",
+                        })}
+                      >
+                        Search
                       </Link>
                     </div>
                   </SheetDescription>

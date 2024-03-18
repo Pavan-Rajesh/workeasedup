@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import validator from "validator";
 const Page = ({ params }) => {
   const [rating, setRating] = useState(null);
@@ -30,7 +30,11 @@ const Page = ({ params }) => {
   }, []);
 
   async function submitRating() {
-    if (!validator.isNumeric(rating) || !rating) {
+    if (
+      !validator.isNumeric(rating) ||
+      !rating ||
+      !(parseInt(rating) > 0 && parseInt(rating) < 10)
+    ) {
       toast.error("enter valid rating");
       return;
     }

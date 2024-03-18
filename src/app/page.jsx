@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
-import { cookies } from "next/headers";
+
 // import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import Navbar from "@/components/Navbar";
+import Mainspotlight from "@/components/Mainspotlight";
 
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
@@ -9,9 +11,9 @@ import Advantages from "@/components/Advantages";
 import Footer from "@/components/Footer";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { LampDemo } from "@/components/lamp";
-
+import GlobeDemo from "@/components/Mainglobe";
 // import { redirect } from "next/navigation";
-const page = async () => {
+const page = () => {
   // const supabase = createServerComponentClient({ cookies });
   // const {
   //   data: { session },
@@ -23,10 +25,15 @@ const page = async () => {
   return (
     <>
       {/* <Navbar /> */}
-      <Hero />
+      <div className="flex">
+        <GlobeDemo />
+        <Mainspotlight />
+      </div>
+      {/* <Hero /> */}
 
       <Features />
       <LampDemo />
+
       {/* <Advantages /> */}
       {/* <Link href="/givework">give work</Link>
       <Link href="/regwork">register for work</Link>

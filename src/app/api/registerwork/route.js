@@ -54,7 +54,9 @@ export async function POST(request) {
 
   if (query.length > 0) {
     const coordinates = JSON.parse(query[0].st_asgeojson);
-    const [{ userid, noworkersreq, worktype }] = query;
+    const [{ userid, noworkersreq, worktype, phonenumber }] = query;
+
+   
     // console.log(userid, noworkersreq, worktype);
 
     const updateTables =

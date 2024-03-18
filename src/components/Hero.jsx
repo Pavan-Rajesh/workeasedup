@@ -2,6 +2,7 @@
 import React from "react";
 import { buttonVariants } from "./ui/button";
 import Link from "next/link";
+import GlobeDemo from "./Mainglobe";
 const Hero = () => {
   return (
     <section className="text-center py-4 h-[88vh] gap-8 flex justify-center content-center flex-col">

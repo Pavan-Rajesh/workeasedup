@@ -47,9 +47,7 @@ const page = async () => {
                   work for your labor requirements
                 </p>
               </CardContent>
-              <CardFooter>
-                <p>Card Footer</p>
-              </CardFooter>
+              <CardFooter>{/* <p>Card Footer</p> */}</CardFooter>
             </Card>
           </Link>
           <Link href="/reghead">
@@ -67,9 +65,7 @@ const page = async () => {
               <CardContent>
                 <p>You will be having some workers under you.</p>
               </CardContent>
-              <CardFooter>
-                <p>Card Footer</p>
-              </CardFooter>
+              <CardFooter>{/* <p>Card Footer</p> */}</CardFooter>
             </Card>
           </Link>
           <Link href="regwork">
@@ -85,14 +81,12 @@ const page = async () => {
                 <CardDescription></CardDescription>
               </CardHeader>
               <CardContent>
-                <p>
+                {/* <p>
                   Specify the quantity of workers needed and the nature of the
                   work for your labor requirements
-                </p>
+                </p> */}
               </CardContent>
-              <CardFooter>
-                <p>Card Footer</p>
-              </CardFooter>
+              <CardFooter>{/* <p>Card Footer</p> */}</CardFooter>
             </Card>
           </Link>
           <Link href="/seleworkers">
@@ -110,9 +104,7 @@ const page = async () => {
                   delete workers under him
                 </p>
               </CardContent>
-              <CardFooter>
-                <p>Card Footer</p>
-              </CardFooter>
+              <CardFooter>{/* <p>Card Footer</p> */}</CardFooter>
             </Card>
           </Link>
           <Link href="/map">
@@ -127,9 +119,7 @@ const page = async () => {
               <CardContent>
                 <p>You can see the Locations of the Contractors and Labours</p>
               </CardContent>
-              <CardFooter>
-                <p>Card Footer</p>
-              </CardFooter>
+              <CardFooter>{/* <p>Card Footer</p> */}</CardFooter>
             </Card>
           </Link>
           <Link href="/ownerdsh">
@@ -150,13 +140,11 @@ const page = async () => {
                   Rating
                 </p>
               </CardContent>
-              <CardFooter>
-                <p>Card Footer</p>
-              </CardFooter>
+              <CardFooter>{/* <p>Card Footer</p> */}</CardFooter>
             </Card>
           </Link>
 
-          <div>
+          {/* <div>
             <h1>welcome{session.user.email}</h1>
             <div>
               <h3>
@@ -192,7 +180,7 @@ const page = async () => {
               and workers
               <Link href={"/ownerdsh"}>Give ratings to workers and heads</Link>
             </h3>
-          </div>
+          </div> */}
         </div>
         {/* <Footer /> */}
       </MaxWidthWrapper>

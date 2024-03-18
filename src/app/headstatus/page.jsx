@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
-
+import { toast } from "sonner";
 const Page = () => {
   const [owner, setOwner] = useState({
     assigned: "false",
@@ -10,14 +10,17 @@ const Page = () => {
   });
   const [matched, setMatched] = useState(false);
   const [status, setAccept] = useState(true);
-  function acceptOwner() {
-    fetch("/api/headstatus", {
+  async function acceptOwner() {
+    const loading = toast.loading("accepting");
+    await fetch("/api/headstatus", {
       method: "POST",
       body: JSON.stringify({
         ownerid: owner.id,
         status,
       }),
     });
+    toast.dismiss(loading);
+    toast.success("successfully accepted");
   }
   function rejectOwner() {
     fetch("/api/headstatus", {
