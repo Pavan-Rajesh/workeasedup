@@ -19,7 +19,7 @@ export default function Page() {
   }, []);
 
   return (
-    <main className="h-full w-full flex flex-col lg:flex-row  [&>*]:basis-1/2 -z-30">
+    <main className="h-full w-full flex flex-col lg:flex-row  [&>*]:basis-1/2 ">
       <div id="map" className="">
         <MapWithNoSSR />
       </div>

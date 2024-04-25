@@ -157,7 +157,7 @@ const Page = () => {
   return (
     <>
       {/* <Navbar /> */}
-      <h1>welcome{user}</h1>
+      {/* <h1>welcome{user}</h1>
       <h5>
         here auto completion of the name and the phone number should be given
         that will be retrived from the sesssion
@@ -165,7 +165,7 @@ const Page = () => {
       <h1>
         in this we will be giving work to others that means owner will be
         registering the work
-      </h1>
+      </h1> */}
       <div className="flex justify-center contents-center flex-col w-full px-5 py-2  md:w-2/4">
         <form onSubmit={handleSubmit}>
           <Fromfield>

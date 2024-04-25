@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 const Page = () => {
   const [role, setRole] = useState("worker");
   const [roleData, setRoleData] = useState(null);
+  const [headIds, setHeadIds] = useState(null);
+  const [workerIds, setWorkerIds] = useState(null);
 
   // to be done
   function Worker() {
@@ -66,11 +68,17 @@ const Page = () => {
         // const { workerdata } = res;
         if (role == "head") {
           setRoleData(res.headData[0]);
+          setWorkerIds(res.workerIds[0].workers);
+          console.log(res.headData[0]);
         }
         if (role == "worker") {
           setRoleData(res.workerdata[0]);
-        } else {
+        } else if (role == "owner") {
+          console.log(res);
           setRoleData(res.ownerdata[0]);
+          setHeadIds(res.headIds[0].head);
+
+          setWorkerIds(res.workerIds[0].workers);
         }
       });
     toast.dismiss(loading);
@@ -110,7 +118,11 @@ const Page = () => {
                 </span>
               </div>
             </>
-          ) : role == "owner" ? (
+          ) : (
+            <></>
+          )}
+
+          {role == "owner" ? (
             <>
               <div>
                 <span>Name : {roleData?.ownername}</span>
@@ -129,8 +141,17 @@ const Page = () => {
               <div>
                 <span>pending:{roleData?.pending}</span>
               </div>
+              <div>
+                <span>HeadIds:{headIds?.map((id) => id)}</span>
+              </div>
+              <div>
+                <span>WorkerIds:{workerIds?.map((id) => id)}</span>
+              </div>
             </>
           ) : (
+            <></>
+          )}
+          {role == "head" ? (
             <>
               <div>
                 <span>Name : {roleData?.name}</span>
@@ -144,7 +165,21 @@ const Page = () => {
               <div>
                 <span>status : {roleData?.status}</span>
               </div>
+              <div>
+                <span>owner : {roleData?.owner}</span>
+              </div>
+
+              <div>
+                <span>
+                  WorkerIds:
+                  {workerIds?.map((id) => (
+                    <div key={id}>{id}</div>
+                  ))}
+                </span>
+              </div>
             </>
+          ) : (
+            <></>
           )}
         </div>
       </div>

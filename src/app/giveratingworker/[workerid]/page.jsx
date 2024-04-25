@@ -26,6 +26,14 @@ const Page = ({ params }) => {
       });
   }, []);
   async function submitRating() {
+    if (
+      !validator.isNumeric(rating) ||
+      !rating ||
+      !(parseInt(rating) > 0 && parseInt(rating) < 10)
+    ) {
+      toast.error("enter valid rating");
+      return;
+    }
     const loading = toast.loading("processing");
     const x = await fetch("/api/individualworkers", {
       method: "POST",

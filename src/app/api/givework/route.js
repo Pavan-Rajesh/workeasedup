@@ -10,6 +10,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sql } from "drizzle-orm";
 import { db } from "@/db";
 import { client } from "@/db";
+import { twilioClient } from "@/db";
 export const dynamic = "force-dynamic";
 export async function POST(request) {
   const ownerData = await request.json();
@@ -59,7 +60,22 @@ export async function POST(request) {
   const updateTables =
     await db.execute(sql`select your_function_name_ver3(${ownerData.numberofworkers},${latitude},${longitude},${id},${ownerData.workType});
      `);
-
+  const phone =
+    await client`select phone,name from users where id in (select unnest(workers) from owners_duplicate where userid=${id})`;
+  console.log(phone);
+  await Promise.all(
+    phone.map((person) => {
+      return twilioClient.messages.create({
+        to: `+91${person.phone}`,
+        from: "+12518424997",
+        body: `hello you have owner assigned and your name is ${person.name}`,
+      });
+    })
+  )
+    .then((messages) => {
+      console.log("Messages sent!");
+    })
+    .catch((err) => console.error(err));
   return NextResponse.json({ message: "This Worked", success: true });
 }
 

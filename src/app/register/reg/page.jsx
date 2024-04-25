@@ -82,7 +82,9 @@ export default function Login() {
       body: JSON.stringify(userData),
     });
     toast.dismiss(signup);
+    toast.success("successfully signed up");
     router.refresh();
+    router.push("/");
   };
 
   // const handleSignIn = async () => {

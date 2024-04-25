@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 import {
   Card,
   CardHeader,
@@ -11,12 +12,14 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { ta } from "date-fns/locale";
 const Page = () => {
   const [rating, setRating] = useState(null);
   const [heads, setHeads] = useState([]);
   useEffect(() => {
     async function fetchheads() {
-      fetch("/api/headwithwhole", {
+      const loading = toast.loading("fetching");
+      await fetch("/api/headwithwhole", {
         method: "GET",
       })
         .then((res) => {
@@ -26,6 +29,8 @@ const Page = () => {
           console.log(res);
           setHeads(res.headsData);
         });
+      toast.dismiss(loading);
+      toast.success("successfully fetched");
     }
     fetchheads();
   }, []);
