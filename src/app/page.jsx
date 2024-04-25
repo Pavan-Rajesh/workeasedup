@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { LampDemo } from "@/components/lamp";
 import GlobeDemo from "@/components/Mainglobe";
+import TextGenerateEffectDemo from "@/components/MainAbout";
 // import { redirect } from "next/navigation";
 const page = () => {
   // const supabase = createServerComponentClient({ cookies });
@@ -32,6 +33,13 @@ const page = () => {
       {/* <Hero /> */}
 
       <Features />
+
+      <div className="h-[80vh] flex justify-center items-center flex-col text-center p-5">
+        <h1 className="text-7xl my-5 underline-offset-8 underline decoration-2 decoration-primary">
+          About Us
+        </h1>
+        <TextGenerateEffectDemo />
+      </div>
       <LampDemo />
 
       {/* <Advantages /> */}

@@ -988,31 +988,31 @@ $$ language plpgsql;
 
 
 
--- create
--- or replace function workerAccept(workerid text, ownerid text) returns void as $$
--- DECLARE
+create
+or replace function workerAccept(workerid text, ownerid text) returns void as $$
+DECLARE
 
--- BEGIN
---         -- select dupreq into no_workersreq_updated from owners_duplicate where userid=ownerid::uuid;
---         update workers set status='accepted' where userid=workerid;
---         update owners_duplicate set pending=pending-1,accepted=accepted+1  where userid=ownerid::uuid;
---         select UpdateOwnerDetails(ownerid);
+BEGIN
+        -- select dupreq into no_workersreq_updated from owners_duplicate where userid=ownerid::uuid;
+        update workers set status='accepted' where userid=workerid;
+        update owners_duplicate set pending=pending-1,accepted=accepted+1  where userid=ownerid::uuid;
+        select UpdateOwnerDetails(ownerid);
 
--- END;
--- $$ language plpgsql;
+END;
+$$ language plpgsql;
 
 
 
--- create
--- or replace function workerReject(workerid text, ownerid text) returns void as $$
--- DECLARE
+create
+or replace function workerReject(workerid text, ownerid text) returns void as $$
+DECLARE
 
--- BEGIN
---         -- select dupreq into no_workersreq_updated from owners_duplicate where userid=ownerid::uuid;
---         update workers set status=null,owner=null,block_list=ARRAY_APPEND(block_list,ownerid) where userid=workerid;
---         update owners_duplicate set pending=pending-1,noworkersreq=noworkersreq+1,workers=ARRAY_REMOVE(workers,workerid) where userid=ownerid::uuid;
--- END;
--- $$ language plpgsql;
+BEGIN
+        -- select dupreq into no_workersreq_updated from owners_duplicate where userid=ownerid::uuid;
+        update workers set status=null,owner=null,block_list=ARRAY_APPEND(block_list,ownerid) where userid=workerid;
+        update owners_duplicate set pending=pending-1,noworkersreq=noworkersreq+1,workers=ARRAY_REMOVE(workers,workerid) where userid=ownerid::uuid;
+END;
+$$ language plpgsql;
 
 
 
