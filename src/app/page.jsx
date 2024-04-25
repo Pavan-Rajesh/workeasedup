@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 // import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import Navbar from "@/components/Navbar";
@@ -14,7 +14,8 @@ import { LampDemo } from "@/components/lamp";
 import GlobeDemo from "@/components/Mainglobe";
 import TextGenerateEffectDemo from "@/components/MainAbout";
 // import { redirect } from "next/navigation";
-const page = () => {
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+const Page = () => {
   // const supabase = createServerComponentClient({ cookies });
   // const {
   //   data: { session },
@@ -23,6 +24,24 @@ const page = () => {
   // if (!session) {
   //   redirect("/login");
   // }
+  const supabase = createClientComponentClient();
+  useEffect(() => {
+    console.log("sjdflskdjflsfd");
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event == "PASSWORD_RECOVERY") {
+        console.log("hjedsfsdf");
+        const newPassword = prompt(
+          "What would you like your new password to be?"
+        );
+        const { data, error } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
+
+        if (data) alert("Password updated successfully!");
+        if (error) alert("There was an error updating your password.");
+      }
+    });
+  }, []);
   return (
     <>
       {/* <Navbar /> */}
@@ -51,4 +70,4 @@ const page = () => {
     </>
   );
 };
-export default page;
+export default Page;

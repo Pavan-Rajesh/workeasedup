@@ -8,7 +8,7 @@
 import React from "react";
 import Link from "next/link";
 import { ThemeToggler } from "./ThemeToggler";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants, Button } from "./ui/button";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import {
@@ -29,12 +29,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { useEffect, useState, useRef } from "react";
+import { toast } from "sonner";
 
 const Navbar = () => {
   // const navRef = useRef(null);
   const [email, setEmail] = useState("guest@gmail");
   const supabase = createClientComponentClient();
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event == "PASSWORD_RECOVERY") {
+        const newPassword = prompt(
+          "What would you like your new password to be?"
+        );
+        const { data, error } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
 
+        if (data) alert("Password updated successfully!");
+        if (error) alert("There was an error updating your password.");
+      }
+    });
+  }, []);
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       setEmail(session?.user?.email);
@@ -133,6 +148,24 @@ const Navbar = () => {
                         })}
                       >
                         Search
+                      </Link>
+                      <Button
+                        type="button"
+                        onClick={async () => {
+                          const loading = toast.loading("signing out");
+                          await supabase.auth.signOut();
+                          toast.dismiss(loading);
+                          toast.success("signed out");
+                        }}
+                        className=""
+                      >
+                        Logout
+                      </Button>
+                      <Link
+                        href={"/resetpage"}
+                        className={buttonVariants({ variant: "link" })}
+                      >
+                        <span>&#10024;</span> Magic Link Login
                       </Link>
                     </div>
                   </SheetDescription>
