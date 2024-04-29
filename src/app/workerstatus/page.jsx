@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { toast } from "sonner";
 const Page = () => {
   const [owner, setOwner] = useState({
     assigned: "false",
@@ -9,16 +10,20 @@ const Page = () => {
   const [matched, setMatched] = useState(false);
 
   const [status, setAccept] = useState(true);
-  function acceptOwner() {
-    fetch("/api/workerstatus", {
+
+  async function acceptOwner() {
+    const loading = toast.loading("accepting owner");
+    await fetch("/api/workerstatus", {
       method: "POST",
       body: JSON.stringify({
         ownerid: owner.id,
         status,
       }),
     });
+    toast.dismiss(loading);
   }
   function rejectOwner() {
+    const loading = toast.loading("accepting owner");
     fetch("/api/workerstatus", {
       method: "POST",
       body: JSON.stringify({
@@ -26,6 +31,7 @@ const Page = () => {
         status: false,
       }),
     });
+    toast.dismiss(loading);
   }
 
   useEffect(() => {
