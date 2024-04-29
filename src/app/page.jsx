@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 
 // import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import Navbar from "@/components/Navbar";
-import Mainspotlight from "@/components/Mainspotlight";
 
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
@@ -52,7 +51,6 @@ const Page = () => {
       {/* <Navbar /> */}
       <div className="flex">
         <GlobeDemo />
-        <Mainspotlight />
       </div>
       {/* <Hero /> */}
 
