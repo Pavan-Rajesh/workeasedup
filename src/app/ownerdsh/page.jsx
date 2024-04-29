@@ -22,7 +22,6 @@ const Page = () => {
   // const [head, setHeadDetails] = useState([]);
   // const [headWorkers, setheadWorkers] = useState([]);
 
-<<<<<<< HEAD
   useEffect(() => {
     async function fetchWorkersworked() {
       fetch("/api/ownerdash")
@@ -43,7 +42,6 @@ const Page = () => {
     }
     fetchWorkersworked();
   }, []);
-=======
   // useEffect(() => {
   //   fetch("http://localhost:3000/api/ownerdash")
   //     .then((data) => data.json())
@@ -63,7 +61,6 @@ const Page = () => {
   //       setheadWorkers(data.ownerWorkers[0].headWorkers);
   //     });
   // }, []);
->>>>>>> 9028ae7c6720e8bfd16ab44e283e05d233173ae1
 
   return (
     <div className="grid gap-5 grid-cols-1  md:grid-cols-2 pt-10 w-full">

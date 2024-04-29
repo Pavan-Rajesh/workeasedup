@@ -46,16 +46,7 @@ const Page = () => {
       }
     });
   }, []);
-  // <<<<<<< deploy
-  // if (!session) {
-  //   redirect("/login");
-  // }
-  // =======
-  //   if (!session) {
-  //     redirect("/login");
-  //   }
 
-  // >>>>>>> main
   return (
     <>
       {/* <Navbar /> */}
