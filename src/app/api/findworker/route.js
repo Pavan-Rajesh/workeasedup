@@ -12,3 +12,4 @@ export async function GET(request) {
     data: user,
   });
 }
+export const dynamic = "force-dynamic";

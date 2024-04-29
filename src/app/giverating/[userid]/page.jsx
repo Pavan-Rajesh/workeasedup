@@ -5,13 +5,19 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import validator from "validator";
+import { toast } from "sonner";
 const Page = ({ userid }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
   const myParams = useParams();
 
-  function handleUserRating() {
+  function handleUserRating(e) {
+    if (!validator.isNumeric(rating)) {
+      toast.error("enter valid rating");
+      return;
+    }
     fetch("http://localhost:3000/api/giverating", {
       method: "POST",
       body: JSON.stringify({

@@ -4,9 +4,11 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { sql } from "drizzle-orm";
 import { db } from "@/db";
 import { client } from "@/db";
+import { twilioClient } from "@/db";
+export const dynamic = "force-dynamic";
 export async function POST(request) {
   const workerData = await request.json();
-  console.log(workerData);
+  // console.log(workerData);
   const supabase = createServerComponentClient({ cookies });
   const {
     data: { session },
@@ -14,7 +16,7 @@ export async function POST(request) {
 
   const { id, email } = session.user;
   const { latitude, longitude } = workerData.coords;
-  const { phoneNumber } = workerData;
+  const { phoneNumber, typeofwork } = workerData;
 
   // here we will be checking if the worker is already been registered
   const checkifRegistered = await db.execute(
@@ -28,49 +30,99 @@ export async function POST(request) {
       success: true,
     });
   }
-  // after we will be selecting the owners in which the owner is near him
-  const results =
-    await db.execute(sql`select userid from owners_duplicate where ST_DWithin(
-            	owners_duplicate.scplace,
-		              ST_SetSRID(ST_MakePoint(${latitude},${longitude}),4326),
-	                  300000) and worktype='carpenter' order by dateofregistration limit 1`);
-
-  // console.log(results); //Result(1) [ { userid: 'adea4c83-80c2-40dd-9045-d086a9621ca7' } ] <-- appending to the owner array
-
-  // if the owner is not registered we will be inserting into the workers table should be modified at front end
-  await db.execute(
-    sql`insert into workers (userid,workername,phonenumber,scplace,owner,worktype) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
+  // await twilioClient.messages
+  //   .create({
+  //     from: "+12518424997",
+  //     body: "successfully Registered as worker and will be notified if any owner is assigned to you team workEase",
+  //     to: `+91${phoneNumber}`,
+  //   })
+  //   .then((x) => console.log(x.body))
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  await db.execute(sql`insert into workers (userid,workername,phonenumber,scplace,worktype) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
                 ST_MakePoint(
                     ${latitude},${longitude}
                 ),
-                4326)::geometry,${results[0].userid},'carpenter')`
-  );
+                4326)::geometry,${typeofwork})`);
 
-  // inserting into the owners array if there is owner is near to him
-  if (results.length > 0) {
-    const attachedUser = await db.execute(
-      // here the query should be modified that is we should update the row where it matches the owner_row that means we have to select the owner by id and we have to update the number of workers required also
-      sql`update owners_duplicate set workers = ARRAY_APPEND(workers,${id}) where userid=${results[0].userid}`
+  const query =
+    await db.execute(sql`select ST_AsGeoJSON(scplace),userid,noworkersreq,worktype from owners_duplicate where ST_DWithin(
+          	owners_duplicate.scplace,
+	              ST_SetSRID(ST_MakePoint(${latitude},${longitude}),4326),
+                  300000) and worktype=${typeofwork} and noworkersreq>0 order by dateofregistration limit 1`);
 
-      //**************          TODO                              */
-      // here we have to send emails or messages to the workers who got the work
-    );
-    console.log(attachedUser);
-    //  update contacts set phones = ARRAY_APPEND(phones,'9039583823') where id=2;
+  if (query.length > 0) {
+    const coordinates = JSON.parse(query[0].st_asgeojson);
+    const [{ userid, noworkersreq, worktype, phonenumber }] = query;
+
+   
+    // console.log(userid, noworkersreq, worktype);
+
+    const updateTables =
+      await db.execute(sql`select your_function_name_ver3(${noworkersreq},${coordinates.coordinates[0]},${coordinates.coordinates[1]},${userid},${worktype});
+     `);
   }
-
-  // console.log(results);
-  // here the result will be displaying the owners which are near to him
-  // and we have to select the owners based on the time of registration
-  const initialArray = [0];
-  const sepworkersRes =
-    await client`insert into sepworkers (uuid,name,worktype,isworking,worksdone,ratings,overallrating) values (${id},${email},'carpenter',TRUE,${0},${initialArray},${0}) on conflict (uuid) do update set isworking=TRUE`;
-
-  // console.log(sepworkersRes);
-  //here we are inserting into separate workers table and his status and his rating or update the users status to working
 
   return NextResponse.json({ message: "This Worked", success: true });
 }
+
+// [
+//   {
+//     ownername: 'pavan@123',
+//     phonenumber: '9034534534',
+//     scplace: '0101000020E610000070DFB42AD3AF3140FC51D499FBCD5440',
+//     userid: '4adf414f-94a4-4c44-99c7-8347842ef966',
+//     workers: null,
+//     startdate: 2024-02-06T00:00:00.000Z,
+//     enddate: 2024-02-21T00:00:00.000Z,
+//     dateofregistration: 2024-02-03T04:46:33.213Z,
+//     noworkersreq: '1',
+//     worktype: 'carpenter',
+//     filled: false
+//   }
+// ]
+
+// // after we will be selecting the owners in which the owner is near him
+// const results =
+//   await db.execute(sql`select userid from owners_duplicate where ST_DWithin(
+//           	owners_duplicate.scplace,
+// 	              ST_SetSRID(ST_MakePoint(${latitude},${longitude}),4326),
+//                   300000) and worktype=${typeofwork} and noworkersreq>0 order by dateofregistration limit 1`);
+
+// // console.log(results); //Result(1) [ { userid: 'adea4c83-80c2-40dd-9045-d086a9621ca7' } ] <-- appending to the owner array
+
+// // if the owner is not registered we will be inserting into the workers table should be modified at front end
+// await db.execute(
+//   sql`insert into workers (userid,workername,phonenumber,scplace,owner,worktype) values (${id}::uuid,${email}::character varying(26),${phoneNumber}::character varying(10),ST_SetSRID(
+//               ST_MakePoint(
+//                   ${latitude},${longitude}
+//               ),
+//               4326)::geometry,${results[0].userid},${typeofwork})`
+// );
+
+// // inserting into the owners array if there is owner is near to him
+// if (results.length > 0) {
+//   const attachedUser = await db.execute(
+//     // here the query should be modified that is we should update the row where it matches the owner_row that means we have to select the owner by id and we have to update the number of workers required also
+//     sql`update owners_duplicate set workers = ARRAY_APPEND(workers,${id}) where userid=${results[0].userid}`
+
+//     //**************          TODO                              */
+//     // here we have to send emails or messages to the workers who got the work
+//   );
+//   console.log(attachedUser);
+//   //  update contacts set phones = ARRAY_APPEND(phones,'9039583823') where id=2;
+// }
+
+// // console.log(results);
+// // here the result will be displaying the owners which are near to him
+// // and we have to select the owners based on the time of registration
+// const initialArray = [0];
+// const sepworkersRes =
+//   await client`insert into sepworkers (uuid,name,worktype,isworking,worksdone,ratings,overallrating) values (${id},${email},${typeofwork},TRUE,${0},${initialArray},${0}) on conflict (uuid) do update set isworking=TRUE`;
+
+// // console.log(sepworkersRes);
+// //here we are inserting into separate workers table and his status and his rating or update the users status to working
 
 // example response
 
