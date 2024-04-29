@@ -51,18 +51,17 @@ const Navbar = () => {
     });
   }, []);
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      setEmail(session?.user?.email);
-    });
-
+    // const { data } = supabase.auth.onAuthStateChange((event, session) => {
+    //   setEmail(session?.user?.email);
+    // });
     // async function getUser() {
     //   const { data } = await supabase.auth.getUser();
     //   setEmail(data.user.email);
     // }
     // getUser();
-    return () => {
-      data.subscription.unsubscribe();
-    };
+    // return () => {
+    //   data.subscription.unsubscribe();
+    // };
   }, []);
   return (
     <>
