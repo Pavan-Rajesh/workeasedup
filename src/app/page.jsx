@@ -20,9 +20,9 @@ const Page = () => {
   //   data: { session },
   // } = await supabase.auth.getSession();
 
-  if (!session) {
-    redirect("/login");
-  }
+  // if (!session) {
+  //   redirect("/login");
+  // }
 
   // if (!session) {
   //   redirect("/login");
