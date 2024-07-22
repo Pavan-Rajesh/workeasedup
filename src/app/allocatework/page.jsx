@@ -48,13 +48,13 @@ const Page = () => {
       return;
     }
     const loading = toast.loading("fetching your location");
-    const url = `https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/${pincode}`;
+    const url = ``;
     const options = {
       method: "GET",
       headers: {
-        "X-RapidAPI-Key": "fedf128934mshd6ab3a8a5eada3dp14371cjsn6e9685134704",
+        "X-RapidAPI-Key": "",
         "X-RapidAPI-Host":
-          "india-pincode-with-latitude-and-longitude.p.rapidapi.com",
+          "",
       },
     };
 
